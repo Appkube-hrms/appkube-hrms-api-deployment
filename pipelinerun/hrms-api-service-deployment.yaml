@@ -83,6 +83,10 @@ spec:
         export AWS_SHARED_CREDENTIALS_FILE=/tekton/home/.aws/credentials
         aws configure list 
         
+        export COGNITO_CLIENT_ID=$2
+        export COGNITO_POOL_ID=$3
+        export BUCKET_NAME=$4
+        export BUCKET_FOLDER_NAME=$5
         export LAMBDA_ROLE=$1
         echo "Using lambda role: $1"
         
@@ -92,6 +96,10 @@ spec:
     - name: ARGS
       value:
         - arn:aws:iam::657907747545:role/service-role/StepFunction_uc1_Requirement-role-2coy70yw
+        - 79qa04umv5o1hskoj5fqtd2s8p
+        - us-east-1_JP5B4WXbH
+        - workflow-lambda-dev-serverlessdeploymentbucket-ygpfd8ufe19x
+        - workflow_DMS/
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
