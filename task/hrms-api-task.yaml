@@ -24,6 +24,9 @@ spec:
   - name: secrets
     description: aws secrets
     mountPath: /tekton/home/.aws
+  - name: serverless-properties
+    description: Properties for serverless deployment
+    mountPath: /etc/serverless-properties
   steps:
   - name: deploy-service
     image: "$(params.image)"

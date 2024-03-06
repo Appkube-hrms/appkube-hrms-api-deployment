@@ -31,6 +31,9 @@ spec:
   - name: dockerconfig-secret
     description: |
       this workspace will hold docker config.json
+  - name: hrms-serverless-properties
+    description: |
+      this workspace will properties for serverless deployment
   tasks:
   - name: service-repo
     taskRef:
@@ -72,6 +75,8 @@ spec:
       workspace: shared-data
     - name: secrets
       workspace: aws-secrets
+    - name: serverless-properties
+      workspace: hrms-serverless-properties
     params:
     - name: workingDir
       value: $(params.workingDir)
@@ -81,12 +86,18 @@ spec:
       value: |
         export AWS_CONFIG_FILE=/tekton/home/.aws/config
         export AWS_SHARED_CREDENTIALS_FILE=/tekton/home/.aws/credentials
-        aws configure list 
-        
-        export COGNITO_CLIENT_ID=$2
-        export COGNITO_POOL_ID=$3
-        export BUCKET_NAME=$4
-        export BUCKET_FOLDER_NAME=$5
+        aws configure list
+
+        echo COGNITO_CLIENT_ID=$(cat /etc/serverless-properties/COGNITO_CLIENT_ID)
+        echo COGNITO_POOL_ID=$(cat /etc/serverless-properties/COGNITO_POOL_ID)
+        echo BUCKET_NAME=$(cat /etc/serverless-properties/BUCKET_NAME)
+        echo BUCKET_FOLDER_NAME=$(cat /etc/serverless-properties/BUCKET_FOLDER_NAME)
+
+        export COGNITO_CLIENT_ID=$(cat /etc/serverless-properties/COGNITO_CLIENT_ID)
+        export COGNITO_POOL_ID=$(cat /etc/serverless-properties/COGNITO_POOL_ID)
+        export BUCKET_NAME=$(cat /etc/serverless-properties/BUCKET_NAME)
+        export BUCKET_FOLDER_NAME=$(cat /etc/serverless-properties/BUCKET_FOLDER_NAME)
+
         export LAMBDA_ROLE=$1
         echo "Using lambda role: $1"
         
@@ -96,10 +107,6 @@ spec:
     - name: ARGS
       value:
         - arn:aws:iam::657907747545:role/service-role/StepFunction_uc1_Requirement-role-2coy70yw
-        - 79qa04umv5o1hskoj5fqtd2s8p
-        - us-east-1_JP5B4WXbH
-        - workflow-lambda-dev-serverlessdeploymentbucket-ygpfd8ufe19x
-        - workflow_DMS/
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -124,6 +131,9 @@ spec:
   - name: aws-secrets
     secret:
       secretName: smoke-aws-credentials
+  - name: hrms-serverless-properties
+    configmap:
+      name: hrms-api-properties
   params:
   - name: repo-url
     value: https://github.com/Appkube-hrms/appkube-hrms-api.git
