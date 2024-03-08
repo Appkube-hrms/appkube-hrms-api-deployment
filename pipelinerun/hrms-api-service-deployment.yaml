@@ -92,21 +92,18 @@ spec:
         echo COGNITO_POOL_ID=$(cat /etc/serverless-properties/COGNITO_POOL_ID)
         echo BUCKET_NAME=$(cat /etc/serverless-properties/BUCKET_NAME)
         echo BUCKET_FOLDER_NAME=$(cat /etc/serverless-properties/BUCKET_FOLDER_NAME)
+        echo LAMBDA_ROLE=$(cat /etc/serverless-properties/LAMBDA_ROLE)
 
         export COGNITO_CLIENT_ID=$(cat /etc/serverless-properties/COGNITO_CLIENT_ID)
         export COGNITO_POOL_ID=$(cat /etc/serverless-properties/COGNITO_POOL_ID)
         export BUCKET_NAME=$(cat /etc/serverless-properties/BUCKET_NAME)
         export BUCKET_FOLDER_NAME=$(cat /etc/serverless-properties/BUCKET_FOLDER_NAME)
-
-        export LAMBDA_ROLE=$1
-        echo "Using lambda role: $1"
+        export LAMBDA_ROLE=$(cat /etc/serverless-properties/LAMBDA_ROLE)
+        echo "Using lambda role: $LAMBDA_ROLE"
         
         serverless plugin install -n serverless-offline
         serverless deploy
         
-    - name: ARGS
-      value:
-        - arn:aws:iam::657907747545:role/service-role/StepFunction_uc1_Requirement-role-2coy70yw
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
